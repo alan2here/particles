@@ -1,0 +1,4 @@
+How to use SnakeVis
+
+python -m cProfile -o program.prof main.py
+snakeviz program.prof
