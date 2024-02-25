@@ -34,10 +34,10 @@ class net:
 particles, links = [], []
 for y in range(net.height):
     for x in range(net.width):
-        particles += [particle(vec2(x * net.cellSize + net.offsetX, y * net.cellSize + net.offsetY))]
+        particles.append(particle(vec2(x * net.cellSize + net.offsetX, y * net.cellSize + net.offsetY)))
     for x in range(net.width - 1):
-        links += [link(y * net.height + x, y * net.height + x + 1, net.cellSize)]
-        links += [link(x * net.width + y, (x + 1) * net.width + y, net.cellSize)]
+        links.append(link(y * net.height + x, y * net.height + x + 1, net.cellSize))
+        links.append(link(x * net.width + y, (x + 1) * net.width + y, net.cellSize))
 
 # ---
 

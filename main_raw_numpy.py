@@ -2,7 +2,7 @@ import pygame
 import numpy as np
 import sys
 
-# updates per second: low
+# updates per second: 30
 
 def vec2_normalise(v2):
     dist = np.linalg.norm(v2)

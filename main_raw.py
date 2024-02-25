@@ -57,11 +57,11 @@ disp_active = False
 particles_pos, particles_vel, links = [], [], []
 for y in range(net_height):
     for x in range(net_width):
-        particles_pos += [(x * net_cellSize + net_offsetX, y * net_cellSize + net_offsetY)] # … += [vec2(…
-        particles_vel += [(0.0, 0.0)] # … += [vec2(…
+        particles_pos.append((x * net_cellSize + net_offsetX, y * net_cellSize + net_offsetY))
+        particles_vel.append((0.0, 0.0))
     for x in range(net_width - 1):
-        links += [(y * net_height + x, y * net_height + x + 1, net_cellSize)] # … += [link(…
-        links += [(x * net_width + y, (x + 1) * net_width + y, net_cellSize)] # … += [link(…
+        links.append((y * net_height + x, y * net_height + x + 1, net_cellSize))
+        links.append((x * net_width + y, (x + 1) * net_width + y, net_cellSize))
 
 # setup – physics constants, display, and timing
 phys_air_resistance = 1 - phys_air_resistance
