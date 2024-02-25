@@ -66,11 +66,12 @@ while True:
         net_cellSize * (net_width - 1) * 1.25, net_width)
 
     # rendering – the net
-    for particle_pos in particles_pos:
-        pygame.draw.circle(disp_pygame, (100, 140, 255), particle_pos.astype(int), 5)
-    for link in links:
-        pygame.draw.line(disp_pygame, (128, 255, 128),
-            particles_pos[link[0]].astype(int), particles_pos[link[1]].astype(int), 2)
+    if disp_active:
+        for particle_pos in particles_pos:
+            pygame.draw.circle(disp_pygame, (100, 140, 255), particle_pos.astype(int), 5)
+        for link in links:
+            pygame.draw.line(disp_pygame, (128, 255, 128),
+                particles_pos[link[0]].astype(int), particles_pos[link[1]].astype(int), 2)
 
     # rendering
     screen_text_FPS = int(timing_clock.get_fps())
