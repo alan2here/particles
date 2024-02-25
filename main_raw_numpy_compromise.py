@@ -15,18 +15,20 @@ def vec2_accTowardsRadius(particles_pos, links, phys_coherence):
     return np.where(norm_dif != 0, dif / norm_dif, dif) * \
         (norm_dif - links[:, 2].reshape(-1, 1)) * phys_coherence
 
-# setup – net, physics constants, and display
+# setup – net, and physics constants
 net_width, net_height = 20, 20
 net_cellSize = 20
 net_offsetX, net_offsetY = 40, 50
 phys_coherence = 0.01
 phys_gravity = 0.005
 phys_air_resistance = 0.01
-phys_itersPerFrame = 10
 phys_dtype_particle_pos = np.float32
 phys_dtype_particle_vel = np.float16
+
+# setup – display
 disp_size = (1200, 600)
-disp_active = True
+disp_cap = False
+disp_active = False
 
 # setup – the net
 particles_pos = np.array([(x * net_cellSize + net_offsetX, y * net_cellSize + net_offsetY)
@@ -46,23 +48,22 @@ timing_clock = pygame.time.Clock()
 
 # main loop
 while True:
-    for n in range(phys_itersPerFrame):
-        # physics – links between particles (reads pos, affects vel)
-        particle0_indices = links[:, 0]
-        particle1_indices = links[:, 1]
-        t = vec2_accTowardsRadius(particles_pos, links, phys_coherence)
-        particles_vel[particle0_indices] += t
-        particles_vel[particle1_indices] -= t
+    # physics – links between particles (reads pos, affects vel)
+    particle0_indices = links[:, 0]
+    particle1_indices = links[:, 1]
+    t = vec2_accTowardsRadius(particles_pos, links, phys_coherence)
+    particles_vel[particle0_indices] += t
+    particles_vel[particle1_indices] -= t
 
-        # physics – gravity, momentum, and air resistance
-        particles_vel[:, 1] += phys_gravity
-        particles_pos += particles_vel
-        particles_vel *= phys_air_resistance
+    # physics – gravity, momentum, and air resistance
+    particles_vel[:, 1] += phys_gravity
+    particles_pos += particles_vel
+    particles_vel *= phys_air_resistance
 
-        # physics – pin the top of the net
-        particles_pos[:net_width, 1] = net_offsetY
-        particles_pos[:net_width, 0] = np.linspace(net_offsetX, net_offsetX +
-            net_cellSize * (net_width - 1) * 1.25, net_width)
+    # physics – pin the top of the net
+    particles_pos[:net_width, 1] = net_offsetY
+    particles_pos[:net_width, 0] = np.linspace(net_offsetX, net_offsetX +
+        net_cellSize * (net_width - 1) * 1.25, net_width)
 
     # rendering – the net
     if disp_active:
@@ -75,12 +76,12 @@ while True:
     # rendering
     screen_text_FPS = int(timing_clock.get_fps())
     screen_text_FPS2 = disp_font.render(
-        f"FPS: {screen_text_FPS}, iter: {screen_text_FPS * phys_itersPerFrame}",
+        f"FPS: {screen_text_FPS}",
         True, (255, 255, 255))
     disp_pygame.blit(screen_text_FPS2, (10, 10))
     pygame.display.flip()
     disp_pygame.fill((0, 0, 0))
-    timing_clock.tick(90)
+    timing_clock.tick(90 if disp_active else 1000000)
 
     # exit test
     for event in pygame.event.get():

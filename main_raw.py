@@ -40,16 +40,18 @@ def phys_links() -> None:
         particles_vel[link[1]] = (particles_vel[link[1]][0] + t[0],
             particles_vel[link[1]][1] + t[1])
 
-# setup – net, physics constants, and display
+# setup – net, and physics constants
 net_width, net_height = 20, 20
 net_cellSize = 20
 net_offsetX, net_offsetY = 40, 50
 phys_coherence = 0.4 # 0 to (soft 0.5)
 phys_gravity = 0.2
 phys_air_resistance = 0.01
-phys_itersPerFrame = 1
+
+# setup – display
 disp_size = (1200, 600)
-disp_active = True
+disp_cap = False
+disp_active = False
 
 # setup – the net
 particles_pos, particles_vel, links = [], [], []
@@ -70,26 +72,25 @@ timing_clock = pygame.time.Clock()
 
 # main loop
 while True:
-    for n in range(phys_itersPerFrame):
-        # physics – links between particles (reads pos, affects vel)
-        phys_links()
+    # physics – links between particles (reads pos, affects vel)
+    phys_links()
 
-        # physics – gravity, momentum, and air resistance
-        # for particle in particles:
-        #     particle.vel.y += phys.gravity
-        #     particle.pos += particle.vel
-        #     particle.vel *= phys.air_resistance
-        for index in range(len(particles_pos)):
-            particles_vel[index] = (particles_vel[index][0],
-                particles_vel[index][1] + phys_gravity)
-            particles_pos[index] = (particles_pos[index][0] + particles_vel[index][0],
-                particles_pos[index][1] + particles_vel[index][1])
-            particles_vel[index] = (particles_vel[index][0] * phys_air_resistance,
-                particles_vel[index][1] * phys_air_resistance)
+    # physics – gravity, momentum, and air resistance
+    # for particle in particles:
+    #     particle.vel.y += phys.gravity
+    #     particle.pos += particle.vel
+    #     particle.vel *= phys.air_resistance
+    for index in range(len(particles_pos)):
+        particles_vel[index] = (particles_vel[index][0],
+            particles_vel[index][1] + phys_gravity)
+        particles_pos[index] = (particles_pos[index][0] + particles_vel[index][0],
+            particles_pos[index][1] + particles_vel[index][1])
+        particles_vel[index] = (particles_vel[index][0] * phys_air_resistance,
+            particles_vel[index][1] * phys_air_resistance)
 
-        # physics – pin the top of the net
-        for x in range(net_width):
-            particles_pos[x] = (x * (net_cellSize * 1.25) + net_offsetX, net_offsetY)
+    # physics – pin the top of the net
+    for x in range(net_width):
+        particles_pos[x] = (x * (net_cellSize * 1.25) + net_offsetX, net_offsetY)
 
     # rendering – particles and links
     if disp_active:
@@ -102,11 +103,11 @@ while True:
     # rendering
     screen_text_FPS = int(timing_clock.get_fps())
     screen_text_FPS2 = disp_font.render(
-        f"FPS: {screen_text_FPS}, iter: {screen_text_FPS * phys_itersPerFrame}", True, (255, 255, 255))
+        f"FPS: {screen_text_FPS}", True, (255, 255, 255))
     disp_pygame.blit(screen_text_FPS2, (10, 10))
     pygame.display.flip() # swap buffers
     disp_pygame.fill((0, 0, 0))
-    timing_clock.tick(90) # 90 FPS
+    timing_clock.tick(90 if disp_cap else 1000000) # 90 FPS
 
     # exit test
     for event in pygame.event.get():

@@ -6,12 +6,14 @@ import sys # exit
 
 # updates per second: 50
 
+class particle: pass
+
 class particle:
     def __init__(self, pos : vec2):
         self.pos = pos
         self.vel = vec2(0, 0)
 
-    def accTowardsRadius(self : vec2, other : vec2,
+    def accTowardsRadius(self : particle, other : particle,
             other_radius : float, proportion : float) -> None:
         dif = other.pos - self.pos
         self.vel += dif.normalise() * (math.sqrt(dif.x ** 2 + dif.y ** 2) - other_radius) * proportion
@@ -62,7 +64,8 @@ class phys:
 
 class disp:
     size = (1200, 600)
-    active = True
+    cap = False
+    active = False
 
     def init():
         disp.pygame = pygame.display.set_mode(disp.size)
@@ -105,7 +108,7 @@ while True:
     disp.pygame.blit(screen_text_FPS2, (10, 10))
     pygame.display.flip() # swap buffers
     disp.pygame.fill((0, 0, 0))
-    timing_clock.tick(90) # 90 FPS
+    timing_clock.tick(90 if disp.cap else 1000000) # 90 FPS
 
     # exit test
     for event in pygame.event.get():

@@ -13,7 +13,7 @@ def vec2_accTowardsRadius(particle_pos, other_pos, other_radius, proportion):
     norm_dif = np.linalg.norm(dif)
     return (dif / norm_dif if norm_dif != 0 else dif) * (norm_dif - other_radius) * proportion
 
-# setup – net, physics constants, and display
+# setup – net, and physics constants
 net_width, net_height = 20, 20
 net_cellSize = 20
 net_offsetX, net_offsetY = 40, 50
@@ -22,7 +22,11 @@ phys_gravity = 0.2
 phys_air_resistance = 0.01
 phys_dtype_particle_pos = np.float32
 phys_dtype_particle_vel = np.float16
+
+# setup – display
 disp_size = (1200, 600)
+disp_cap = False
+disp_active = False
 
 # setup – the net
 particles_pos = np.array([(x * net_cellSize + net_offsetX, y * net_cellSize + net_offsetY)
@@ -76,7 +80,7 @@ while True:
     disp_pygame.blit(screen_text_FPS2, (10, 10))
     pygame.display.flip()
     disp_pygame.fill((0, 0, 0))
-    timing_clock.tick(90)
+    timing_clock.tick(90 if disp_cap else 1000000)
 
     # exit test
     for event in pygame.event.get():
