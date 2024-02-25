@@ -1,6 +1,5 @@
 import pygame
-import nice_stuff
-vec2 = nice_stuff.vec2
+from nice_stuff import vec2
 import math # sqrt
 import sys # exit
 
